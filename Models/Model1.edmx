@@ -1,0 +1,1772 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="HospitalDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Bill_Data">
+          <Key>
+            <PropertyRef Name="Bill_No" />
+          </Key>
+          <Property Name="Bill_No" Type="int" Nullable="false" />
+          <Property Name="Pid" Type="int" />
+          <Property Name="Bill_Date" Type="datetime" />
+          <Property Name="Patient_Type" Type="varchar" MaxLength="30" />
+          <Property Name="Doctor_Id" Type="int" />
+          <Property Name="Doctor_Fees" Type="money" />
+          <Property Name="Room_Charge" Type="money" />
+          <Property Name="Operation_Charges" Type="money" />
+          <Property Name="Medicine_Fees" Type="money" />
+          <Property Name="Total_Days" Type="smallint" />
+          <Property Name="Lab_Fees" Type="money" />
+          <Property Name="Total_Amount" Type="money" />
+          <Property Name="Billing_Status" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="DeptId" />
+          </Key>
+          <Property Name="DeptId" Type="int" Nullable="false" />
+          <Property Name="DepartmentName" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Doctor">
+          <Key>
+            <PropertyRef Name="Doctor_Id" />
+          </Key>
+          <Property Name="Doctor_Id" Type="int" Nullable="false" />
+          <Property Name="Doctor_Name" Type="varchar" MaxLength="30" />
+          <Property Name="DeptId" Type="int" />
+        </EntityType>
+        <EntityType Name="Inpatient">
+          <Key>
+            <PropertyRef Name="Pid" />
+            <PropertyRef Name="Admission_Date" />
+          </Key>
+          <Property Name="Pid" Type="int" Nullable="false" />
+          <Property Name="Room_No" Type="int" />
+          <Property Name="Doctor_Id" Type="int" />
+          <Property Name="Admission_Date" Type="date" Nullable="false" />
+          <Property Name="Discharge_Date" Type="date" />
+          <Property Name="Amount_Per_Day" Type="money" />
+        </EntityType>
+        <EntityType Name="Lab_Information">
+          <Key>
+            <PropertyRef Name="Lab_Id" />
+          </Key>
+          <Property Name="Lab_Id" Type="int" Nullable="false" />
+          <Property Name="LabTestName" Type="varchar" MaxLength="30" />
+          <Property Name="Price" Type="money" />
+        </EntityType>
+        <EntityType Name="Lab_Patient">
+          <Key>
+            <PropertyRef Name="Lab_Id" />
+          </Key>
+          <Property Name="Lab_Id" Type="int" Nullable="false" />
+          <Property Name="PId" Type="int" />
+          <Property Name="Doctor_Id" Type="int" />
+          <Property Name="Test_Date" Type="date" />
+          <Property Name="Price" Type="money" />
+          <Property Name="Billing_Status" Type="varchar" MaxLength="10" />
+          <Property Name="Test_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Outpatient">
+          <Key>
+            <PropertyRef Name="Pid" />
+            <PropertyRef Name="Treatment_Date" />
+          </Key>
+          <Property Name="Pid" Type="int" Nullable="false" />
+          <Property Name="Treatment_Date" Type="date" Nullable="false" />
+          <Property Name="Doctor_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="Patient">
+          <Key>
+            <PropertyRef Name="Patient_Id" />
+          </Key>
+          <Property Name="Patient_Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="30" />
+          <Property Name="Age" Type="smallint" />
+          <Property Name="Weight" Type="smallint" />
+          <Property Name="Gender" Type="varchar" MaxLength="10" />
+          <Property Name="Address" Type="varchar" MaxLength="50" />
+          <Property Name="Phone_No" Type="bigint" />
+          <Property Name="Disease" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="Room_Data">
+          <Key>
+            <PropertyRef Name="Room_No" />
+          </Key>
+          <Property Name="Room_No" Type="int" Nullable="false" />
+          <Property Name="Room_Specification" Type="varchar" MaxLength="20" />
+          <Property Name="Price" Type="money" />
+        </EntityType>
+        <EntityType Name="Room_Info">
+          <Key>
+            <PropertyRef Name="Room_no" />
+          </Key>
+          <Property Name="Room_no" Type="int" Nullable="false" />
+          <Property Name="Room_Status" Type="smallint" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="Fk_deptid_dept">
+          <End Role="Department" Type="Self.Department" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Department">
+              <PropertyRef Name="DeptId" />
+            </Principal>
+            <Dependent Role="Doctor">
+              <PropertyRef Name="DeptId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Did">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Bill_Data" Type="Self.Bill_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Bill_Data">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Docid_Lab">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpaitent_DoctorId">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpatient_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpatient_Roomno">
+          <End Role="Room_Data" Type="Self.Room_Data" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room_Data">
+              <PropertyRef Name="Room_No" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Room_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Lab_Id">
+          <End Role="Lab_Information" Type="Self.Lab_Information" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lab_Information">
+              <PropertyRef Name="Lab_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="Test_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Outpaitent_DoctorId">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Outpatient" Type="Self.Outpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Outpatient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_outpatient_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Outpatient" Type="Self.Outpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Outpatient">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Patient_Lab">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="PId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Bill_Data" Type="Self.Bill_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Bill_Data">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Room_No">
+          <End Role="Room_Data" Type="Self.Room_Data" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Room_Info" Type="Self.Room_Info" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Room_Data">
+              <PropertyRef Name="Room_No" />
+            </Principal>
+            <Dependent Role="Room_Info">
+              <PropertyRef Name="Room_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_AddBill" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Bill_No" Type="int" Mode="In" />
+          <Parameter Name="Pid" Type="int" Mode="In" />
+          <Parameter Name="Bill_Date" Type="date" Mode="In" />
+          <Parameter Name="Patient_Type" Type="varchar" Mode="In" />
+          <Parameter Name="Doctor_Id" Type="int" Mode="In" />
+          <Parameter Name="Doctor_Fees" Type="money" Mode="In" />
+          <Parameter Name="Room_Charge" Type="money" Mode="In" />
+          <Parameter Name="Operation_Charges" Type="money" Mode="In" />
+          <Parameter Name="Medicine_Fees" Type="money" Mode="In" />
+          <Parameter Name="Total_Days" Type="smallint" Mode="In" />
+          <Parameter Name="Lab_Fees" Type="money" Mode="In" />
+          <Parameter Name="Total_Amount" Type="money" Mode="In" />
+          <Parameter Name="Billing_Status" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="Usp_AddDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctorid" Type="varchar" Mode="In" />
+          <Parameter Name="doctorname" Type="varchar" Mode="In" />
+          <Parameter Name="deptid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_AddInpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="varchar" Mode="In" />
+          <Parameter Name="roomno" Type="int" Mode="In" />
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="admission_date" Type="date" Mode="In" />
+          <Parameter Name="discharge_date" Type="date" Mode="In" />
+          <Parameter Name="amountperday" Type="money" Mode="In" />
+        </Function>
+        <Function Name="Usp_AddOutpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="varchar" Mode="In" />
+          <Parameter Name="treatment_date" Type="date" Mode="In" />
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_AddPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientid" Type="int" Mode="In" />
+          <Parameter Name="name" Type="varchar" Mode="In" />
+          <Parameter Name="age" Type="smallint" Mode="In" />
+          <Parameter Name="weight" Type="smallint" Mode="In" />
+          <Parameter Name="gender" Type="varchar" Mode="In" />
+          <Parameter Name="address" Type="varchar" Mode="In" />
+          <Parameter Name="phonenumber" Type="bigint" Mode="In" />
+          <Parameter Name="disease" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteBill" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Bill_No" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeleteDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctorid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeleteInpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="admission_date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteLabDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_DeleteLabTestDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Lab_Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeleteOutpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="treatment_date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="usp_DeletePaidPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Pid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeletePatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeleteRoom_Info" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="admission_date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="Usp_DeleteRoomData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="roomno" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_DeletetDep" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_GetAllBills" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetAllDep" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_GetAllDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_GetAllInpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetAllLabDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_GetAllOutpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_GetAllPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_GetAllRooms" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetAllUnallocatedRooms" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetAvailablePatients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetLabTestDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetMaxBillNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetMaxDepId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetMaxDoctorId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetMaxLabId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetMaxPatientId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetUnallocatedPatients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_GetUnpaidPtientBillNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Pid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertDep" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DId" Type="int" Mode="In" />
+          <Parameter Name="DName" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertLab" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Lab_Id" Type="int" Mode="In" />
+          <Parameter Name="LabTesstName" Type="varchar" Mode="In" />
+          <Parameter Name="Price" Type="money" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertLabTestDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Lab_Id" Type="int" Mode="In" />
+          <Parameter Name="PId" Type="int" Mode="In" />
+          <Parameter Name="Doctor_Id" Type="int" Mode="In" />
+          <Parameter Name="Test_Date" Type="date" Mode="In" />
+          <Parameter Name="Price" Type="money" Mode="In" />
+          <Parameter Name="Billing_Status" Type="varchar" Mode="In" />
+          <Parameter Name="Test_Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertMaxBill_No" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Pid" Type="int" Mode="In" />
+          <Parameter Name="Bill_Date" Type="date" Mode="In" />
+          <Parameter Name="D_Id" Type="int" Mode="In" />
+          <Parameter Name="P" Type="money" Mode="In" />
+        </Function>
+        <Function Name="usp_MaxLab_PatientTestId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_MaxLabTestId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="Usp_RoomData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="roomno" Type="int" Mode="In" />
+          <Parameter Name="roomspecification" Type="varchar" Mode="In" />
+          <Parameter Name="price" Type="money" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchBilldate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="billdate" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchBillno" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="billno" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctorid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchInpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="admission_date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchOutpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="treatment_date" Type="date" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchPatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_SearchRoom" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="roomno" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateBill" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Bill_No" Type="int" Mode="In" />
+          <Parameter Name="Pid" Type="int" Mode="In" />
+          <Parameter Name="Bill_Date" Type="date" Mode="In" />
+          <Parameter Name="Patient_Type" Type="varchar" Mode="In" />
+          <Parameter Name="Doctor_Id" Type="varchar" Mode="In" />
+          <Parameter Name="Doctor_Fees" Type="money" Mode="In" />
+          <Parameter Name="Room_Charge" Type="money" Mode="In" />
+          <Parameter Name="Operation_Charges" Type="money" Mode="In" />
+          <Parameter Name="Medicine_Fees" Type="money" Mode="In" />
+          <Parameter Name="Total_Days" Type="smallint" Mode="In" />
+          <Parameter Name="Lab_Fees" Type="money" Mode="In" />
+          <Parameter Name="Total_Amount" Type="money" Mode="In" />
+          <Parameter Name="Billing_Status" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateBillStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Bill_No" Type="int" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateDep" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DId" Type="int" Mode="In" />
+          <Parameter Name="DName" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="Usp_UpdateDoctor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="doctorid" Type="int" Mode="In" />
+          <Parameter Name="doctorname" Type="varchar" Mode="In" />
+          <Parameter Name="deptid" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_UpdateInpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="roomno" Type="int" Mode="In" />
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+          <Parameter Name="admission_date" Type="date" Mode="In" />
+          <Parameter Name="discharge_date" Type="date" Mode="In" />
+          <Parameter Name="amountperday" Type="money" Mode="In" />
+        </Function>
+        <Function Name="usp_UpdateLabTestDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Lab_Id" Type="int" Mode="In" />
+          <Parameter Name="PId" Type="int" Mode="In" />
+          <Parameter Name="Doctor_Id" Type="int" Mode="In" />
+          <Parameter Name="Test_Date" Type="date" Mode="In" />
+          <Parameter Name="Price" Type="money" Mode="In" />
+          <Parameter Name="Billing_Status" Type="varchar" Mode="In" />
+          <Parameter Name="Test_Id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_UpdateOutpatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pid" Type="int" Mode="In" />
+          <Parameter Name="treatment_date" Type="date" Mode="In" />
+          <Parameter Name="doctor_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Usp_UpdatePatient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="patientid" Type="int" Mode="In" />
+          <Parameter Name="name" Type="varchar" Mode="In" />
+          <Parameter Name="age" Type="smallint" Mode="In" />
+          <Parameter Name="weight" Type="smallint" Mode="In" />
+          <Parameter Name="gender" Type="varchar" Mode="In" />
+          <Parameter Name="address" Type="varchar" Mode="In" />
+          <Parameter Name="phonenumber" Type="bigint" Mode="In" />
+          <Parameter Name="disease" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="Usp_UpdateRoomData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="roomno" Type="int" Mode="In" />
+          <Parameter Name="roomspecification" Type="varchar" Mode="In" />
+          <Parameter Name="price" Type="money" Mode="In" />
+        </Function>
+        <EntityContainer Name="HospitalDBModelStoreContainer">
+          <EntitySet Name="Bill_Data" EntityType="Self.Bill_Data" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Doctor" EntityType="Self.Doctor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Inpatient" EntityType="Self.Inpatient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lab_Information" EntityType="Self.Lab_Information" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lab_Patient" EntityType="Self.Lab_Patient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Outpatient" EntityType="Self.Outpatient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Room_Data" EntityType="Self.Room_Data" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Room_Info" EntityType="Self.Room_Info" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Fk_deptid_dept" Association="Self.Fk_deptid_dept">
+            <End Role="Department" EntitySet="Department" />
+            <End Role="Doctor" EntitySet="Doctor" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Did" Association="Self.Fk_Did">
+            <End Role="Doctor" EntitySet="Doctor" />
+            <End Role="Bill_Data" EntitySet="Bill_Data" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Docid_Lab" Association="Self.Fk_Docid_Lab">
+            <End Role="Doctor" EntitySet="Doctor" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpaitent_DoctorId" Association="Self.Fk_Inpaitent_DoctorId">
+            <End Role="Doctor" EntitySet="Doctor" />
+            <End Role="Inpatient" EntitySet="Inpatient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpatient_Pid" Association="Self.Fk_Inpatient_Pid">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="Inpatient" EntitySet="Inpatient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpatient_Roomno" Association="Self.Fk_Inpatient_Roomno">
+            <End Role="Room_Data" EntitySet="Room_Data" />
+            <End Role="Inpatient" EntitySet="Inpatient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Lab_Id" Association="Self.Fk_Lab_Id">
+            <End Role="Lab_Information" EntitySet="Lab_Information" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Outpaitent_DoctorId" Association="Self.Fk_Outpaitent_DoctorId">
+            <End Role="Doctor" EntitySet="Doctor" />
+            <End Role="Outpatient" EntitySet="Outpatient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_outpatient_Pid" Association="Self.Fk_outpatient_Pid">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="Outpatient" EntitySet="Outpatient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Patient_Lab" Association="Self.Fk_Patient_Lab">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Pid" Association="Self.Fk_Pid">
+            <End Role="Patient" EntitySet="Patient" />
+            <End Role="Bill_Data" EntitySet="Bill_Data" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Room_No" Association="Self.Fk_Room_No">
+            <End Role="Room_Data" EntitySet="Room_Data" />
+            <End Role="Room_Info" EntitySet="Room_Info" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="HospitalDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Bill_Data">
+          <Key>
+            <PropertyRef Name="Bill_No" />
+          </Key>
+          <Property Name="Bill_No" Type="Int32" Nullable="false" />
+          <Property Name="Pid" Type="Int32" />
+          <Property Name="Bill_Date" Type="DateTime" Precision="3" />
+          <Property Name="Patient_Type" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Doctor_Id" Type="Int32" />
+          <Property Name="Doctor_Fees" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Room_Charge" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Operation_Charges" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Medicine_Fees" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Total_Days" Type="Int16" />
+          <Property Name="Lab_Fees" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Total_Amount" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Billing_Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Doctor" Relationship="Self.Fk_Did" FromRole="Bill_Data" ToRole="Doctor" />
+          <NavigationProperty Name="Patient" Relationship="Self.Fk_Pid" FromRole="Bill_Data" ToRole="Patient" />
+        </EntityType>
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="DeptId" />
+          </Key>
+          <Property Name="DeptId" Type="Int32" Nullable="false" />
+          <Property Name="DepartmentName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Doctors" Relationship="Self.Fk_deptid_dept" FromRole="Department" ToRole="Doctor" />
+        </EntityType>
+        <EntityType Name="Doctor">
+          <Key>
+            <PropertyRef Name="Doctor_Id" />
+          </Key>
+          <Property Name="Doctor_Id" Type="Int32" Nullable="false" />
+          <Property Name="Doctor_Name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DeptId" Type="Int32" />
+          <NavigationProperty Name="Bill_Data" Relationship="Self.Fk_Did" FromRole="Doctor" ToRole="Bill_Data" />
+          <NavigationProperty Name="Department" Relationship="Self.Fk_deptid_dept" FromRole="Doctor" ToRole="Department" />
+          <NavigationProperty Name="Lab_Patient" Relationship="Self.Fk_Docid_Lab" FromRole="Doctor" ToRole="Lab_Patient" />
+          <NavigationProperty Name="Inpatients" Relationship="Self.Fk_Inpaitent_DoctorId" FromRole="Doctor" ToRole="Inpatient" />
+          <NavigationProperty Name="Outpatients" Relationship="Self.Fk_Outpaitent_DoctorId" FromRole="Doctor" ToRole="Outpatient" />
+        </EntityType>
+        <EntityType Name="Inpatient">
+          <Key>
+            <PropertyRef Name="Pid" />
+            <PropertyRef Name="Admission_Date" />
+          </Key>
+          <Property Name="Pid" Type="Int32" Nullable="false" />
+          <Property Name="Room_No" Type="Int32" />
+          <Property Name="Doctor_Id" Type="Int32" />
+          <Property Name="Admission_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Discharge_Date" Type="DateTime" Precision="0" />
+          <Property Name="Amount_Per_Day" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="Doctor" Relationship="Self.Fk_Inpaitent_DoctorId" FromRole="Inpatient" ToRole="Doctor" />
+          <NavigationProperty Name="Patient" Relationship="Self.Fk_Inpatient_Pid" FromRole="Inpatient" ToRole="Patient" />
+          <NavigationProperty Name="Room_Data" Relationship="Self.Fk_Inpatient_Roomno" FromRole="Inpatient" ToRole="Room_Data" />
+        </EntityType>
+        <EntityType Name="Lab_Information">
+          <Key>
+            <PropertyRef Name="Lab_Id" />
+          </Key>
+          <Property Name="Lab_Id" Type="Int32" Nullable="false" />
+          <Property Name="LabTestName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="Lab_Patient" Relationship="Self.Fk_Lab_Id" FromRole="Lab_Information" ToRole="Lab_Patient" />
+        </EntityType>
+        <EntityType Name="Lab_Patient">
+          <Key>
+            <PropertyRef Name="Lab_Id" />
+          </Key>
+          <Property Name="Lab_Id" Type="Int32" Nullable="false" />
+          <Property Name="PId" Type="Int32" />
+          <Property Name="Doctor_Id" Type="Int32" />
+          <Property Name="Test_Date" Type="DateTime" Precision="0" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="Billing_Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Test_Id" Type="Int32" />
+          <NavigationProperty Name="Doctor" Relationship="Self.Fk_Docid_Lab" FromRole="Lab_Patient" ToRole="Doctor" />
+          <NavigationProperty Name="Lab_Information" Relationship="Self.Fk_Lab_Id" FromRole="Lab_Patient" ToRole="Lab_Information" />
+          <NavigationProperty Name="Patient" Relationship="Self.Fk_Patient_Lab" FromRole="Lab_Patient" ToRole="Patient" />
+        </EntityType>
+        <EntityType Name="Outpatient">
+          <Key>
+            <PropertyRef Name="Pid" />
+            <PropertyRef Name="Treatment_Date" />
+          </Key>
+          <Property Name="Pid" Type="Int32" Nullable="false" />
+          <Property Name="Treatment_Date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Doctor_Id" Type="Int32" />
+          <NavigationProperty Name="Doctor" Relationship="Self.Fk_Outpaitent_DoctorId" FromRole="Outpatient" ToRole="Doctor" />
+          <NavigationProperty Name="Patient" Relationship="Self.Fk_outpatient_Pid" FromRole="Outpatient" ToRole="Patient" />
+        </EntityType>
+        <EntityType Name="Patient">
+          <Key>
+            <PropertyRef Name="Patient_Id" />
+          </Key>
+          <Property Name="Patient_Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Age" Type="Int16" />
+          <Property Name="Weight" Type="Int16" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Phone_No" Type="Int64" />
+          <Property Name="Disease" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Bill_Data" Relationship="Self.Fk_Pid" FromRole="Patient" ToRole="Bill_Data" />
+          <NavigationProperty Name="Inpatients" Relationship="Self.Fk_Inpatient_Pid" FromRole="Patient" ToRole="Inpatient" />
+          <NavigationProperty Name="Lab_Patient" Relationship="Self.Fk_Patient_Lab" FromRole="Patient" ToRole="Lab_Patient" />
+          <NavigationProperty Name="Outpatients" Relationship="Self.Fk_outpatient_Pid" FromRole="Patient" ToRole="Outpatient" />
+        </EntityType>
+        <EntityType Name="Room_Data">
+          <Key>
+            <PropertyRef Name="Room_No" />
+          </Key>
+          <Property Name="Room_No" Type="Int32" Nullable="false" />
+          <Property Name="Room_Specification" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="19" Scale="4" />
+          <NavigationProperty Name="Inpatients" Relationship="Self.Fk_Inpatient_Roomno" FromRole="Room_Data" ToRole="Inpatient" />
+          <NavigationProperty Name="Room_Info" Relationship="Self.Fk_Room_No" FromRole="Room_Data" ToRole="Room_Info" />
+        </EntityType>
+        <EntityType Name="Room_Info">
+          <Key>
+            <PropertyRef Name="Room_no" />
+          </Key>
+          <Property Name="Room_no" Type="Int32" Nullable="false" />
+          <Property Name="Room_Status" Type="Int16" />
+          <NavigationProperty Name="Room_Data" Relationship="Self.Fk_Room_No" FromRole="Room_Info" ToRole="Room_Data" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="Fk_Did">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Bill_Data" Type="Self.Bill_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Bill_Data">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Bill_Data" Type="Self.Bill_Data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Bill_Data">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_deptid_dept">
+          <End Role="Department" Type="Self.Department" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Department">
+              <PropertyRef Name="DeptId" />
+            </Principal>
+            <Dependent Role="Doctor">
+              <PropertyRef Name="DeptId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Docid_Lab">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpaitent_DoctorId">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Outpaitent_DoctorId">
+          <End Role="Doctor" Type="Self.Doctor" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Outpatient" Type="Self.Outpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Doctor">
+              <PropertyRef Name="Doctor_Id" />
+            </Principal>
+            <Dependent Role="Outpatient">
+              <PropertyRef Name="Doctor_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpatient_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Inpatient_Roomno">
+          <End Role="Room_Data" Type="Self.Room_Data" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Inpatient" Type="Self.Inpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Room_Data">
+              <PropertyRef Name="Room_No" />
+            </Principal>
+            <Dependent Role="Inpatient">
+              <PropertyRef Name="Room_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Lab_Id">
+          <End Role="Lab_Information" Type="Self.Lab_Information" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lab_Information">
+              <PropertyRef Name="Lab_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="Test_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Patient_Lab">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Lab_Patient" Type="Self.Lab_Patient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Lab_Patient">
+              <PropertyRef Name="PId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_outpatient_Pid">
+          <End Role="Patient" Type="Self.Patient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Outpatient" Type="Self.Outpatient" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Patient">
+              <PropertyRef Name="Patient_Id" />
+            </Principal>
+            <Dependent Role="Outpatient">
+              <PropertyRef Name="Pid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Fk_Room_No">
+          <End Role="Room_Data" Type="Self.Room_Data" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Room_Info" Type="Self.Room_Info" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Room_Data">
+              <PropertyRef Name="Room_No" />
+            </Principal>
+            <Dependent Role="Room_Info">
+              <PropertyRef Name="Room_no" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="HospitalDBEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Bill_Data" EntityType="Self.Bill_Data" />
+          <EntitySet Name="Departments" EntityType="Self.Department" />
+          <EntitySet Name="Doctors" EntityType="Self.Doctor" />
+          <EntitySet Name="Inpatients" EntityType="Self.Inpatient" />
+          <EntitySet Name="Lab_Information" EntityType="Self.Lab_Information" />
+          <EntitySet Name="Lab_Patient" EntityType="Self.Lab_Patient" />
+          <EntitySet Name="Outpatients" EntityType="Self.Outpatient" />
+          <EntitySet Name="Patients" EntityType="Self.Patient" />
+          <EntitySet Name="Room_Data" EntityType="Self.Room_Data" />
+          <EntitySet Name="Room_Info" EntityType="Self.Room_Info" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <AssociationSet Name="Fk_Did" Association="Self.Fk_Did">
+            <End Role="Doctor" EntitySet="Doctors" />
+            <End Role="Bill_Data" EntitySet="Bill_Data" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Pid" Association="Self.Fk_Pid">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="Bill_Data" EntitySet="Bill_Data" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_deptid_dept" Association="Self.Fk_deptid_dept">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="Doctor" EntitySet="Doctors" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Docid_Lab" Association="Self.Fk_Docid_Lab">
+            <End Role="Doctor" EntitySet="Doctors" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpaitent_DoctorId" Association="Self.Fk_Inpaitent_DoctorId">
+            <End Role="Doctor" EntitySet="Doctors" />
+            <End Role="Inpatient" EntitySet="Inpatients" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Outpaitent_DoctorId" Association="Self.Fk_Outpaitent_DoctorId">
+            <End Role="Doctor" EntitySet="Doctors" />
+            <End Role="Outpatient" EntitySet="Outpatients" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpatient_Pid" Association="Self.Fk_Inpatient_Pid">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="Inpatient" EntitySet="Inpatients" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Inpatient_Roomno" Association="Self.Fk_Inpatient_Roomno">
+            <End Role="Room_Data" EntitySet="Room_Data" />
+            <End Role="Inpatient" EntitySet="Inpatients" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Lab_Id" Association="Self.Fk_Lab_Id">
+            <End Role="Lab_Information" EntitySet="Lab_Information" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Patient_Lab" Association="Self.Fk_Patient_Lab">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="Lab_Patient" EntitySet="Lab_Patient" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_outpatient_Pid" Association="Self.Fk_outpatient_Pid">
+            <End Role="Patient" EntitySet="Patients" />
+            <End Role="Outpatient" EntitySet="Outpatients" />
+          </AssociationSet>
+          <AssociationSet Name="Fk_Room_No" Association="Self.Fk_Room_No">
+            <End Role="Room_Data" EntitySet="Room_Data" />
+            <End Role="Room_Info" EntitySet="Room_Info" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(HospitalDBModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(HospitalDBModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="usp_AddBill">
+            <Parameter Name="Bill_No" Mode="In" Type="Int32" />
+            <Parameter Name="Pid" Mode="In" Type="Int32" />
+            <Parameter Name="Bill_Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Patient_Type" Mode="In" Type="String" />
+            <Parameter Name="Doctor_Id" Mode="In" Type="Int32" />
+            <Parameter Name="Doctor_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Room_Charge" Mode="In" Type="Decimal" />
+            <Parameter Name="Operation_Charges" Mode="In" Type="Decimal" />
+            <Parameter Name="Medicine_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Total_Days" Mode="In" Type="Int16" />
+            <Parameter Name="Lab_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Total_Amount" Mode="In" Type="Decimal" />
+            <Parameter Name="Billing_Status" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_AddDoctor">
+            <Parameter Name="doctorid" Mode="In" Type="String" />
+            <Parameter Name="doctorname" Mode="In" Type="String" />
+            <Parameter Name="deptid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_AddInpatient">
+            <Parameter Name="pid" Mode="In" Type="String" />
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="admission_date" Mode="In" Type="DateTime" />
+            <Parameter Name="discharge_date" Mode="In" Type="DateTime" />
+            <Parameter Name="amountperday" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_AddOutpatient">
+            <Parameter Name="pid" Mode="In" Type="String" />
+            <Parameter Name="treatment_date" Mode="In" Type="DateTime" />
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_AddPatient">
+            <Parameter Name="patientid" Mode="In" Type="Int32" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="age" Mode="In" Type="Int16" />
+            <Parameter Name="weight" Mode="In" Type="Int16" />
+            <Parameter Name="gender" Mode="In" Type="String" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="phonenumber" Mode="In" Type="Int64" />
+            <Parameter Name="disease" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteBill">
+            <Parameter Name="Bill_No" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeleteDoctor">
+            <Parameter Name="doctorid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeleteInpatient">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="admission_date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteLabDetails">
+            <Parameter Name="Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeleteLabTestDetails">
+            <Parameter Name="Lab_Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeleteOutpatient">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="treatment_date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeletePaidPatient">
+            <Parameter Name="Pid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeletePatient">
+            <Parameter Name="patientid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeleteRoom_Info">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="admission_date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_DeleteRoomData">
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_DeletetDep">
+            <Parameter Name="DId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_GetAllBills" ReturnType="Collection(HospitalDBModel.Usp_GetAllBills_Result)" />
+          <FunctionImport Name="usp_GetAllDep" ReturnType="Collection(HospitalDBModel.usp_GetAllDep_Result)" />
+          <FunctionImport Name="Usp_GetAllDoctor" ReturnType="Collection(HospitalDBModel.Usp_GetAllDoctor_Result)" />
+          <FunctionImport Name="Usp_GetAllInpatient" ReturnType="Collection(HospitalDBModel.Usp_GetAllInpatient_Result)" />
+          <FunctionImport Name="usp_GetAllLabDetails" ReturnType="Collection(HospitalDBModel.usp_GetAllLabDetails_Result)" />
+          <FunctionImport Name="Usp_GetAllOutpatient" ReturnType="Collection(HospitalDBModel.Usp_GetAllOutpatient_Result)" />
+          <FunctionImport Name="Usp_GetAllPatient" ReturnType="Collection(HospitalDBModel.Usp_GetAllPatient_Result)" />
+          <FunctionImport Name="Usp_GetAllRooms" ReturnType="Collection(HospitalDBModel.Usp_GetAllRooms_Result)" />
+          <FunctionImport Name="usp_GetAllUnallocatedRooms" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetAvailablePatients" ReturnType="Collection(HospitalDBModel.usp_GetAvailablePatients_Result)" />
+          <FunctionImport Name="usp_GetLabTestDetails" ReturnType="Collection(HospitalDBModel.usp_GetLabTestDetails_Result)" />
+          <FunctionImport Name="usp_GetMaxBillNo" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetMaxDepId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetMaxDoctorId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetMaxLabId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetMaxPatientId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_GetUnallocatedPatients" ReturnType="Collection(HospitalDBModel.usp_GetUnallocatedPatients_Result)" />
+          <FunctionImport Name="usp_GetUnpaidPtientBillNo">
+            <Parameter Name="Pid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertDep">
+            <Parameter Name="DId" Mode="In" Type="Int32" />
+            <Parameter Name="DName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertLab">
+            <Parameter Name="Lab_Id" Mode="In" Type="Int32" />
+            <Parameter Name="LabTesstName" Mode="In" Type="String" />
+            <Parameter Name="Price" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertLabTestDetails">
+            <Parameter Name="Lab_Id" Mode="In" Type="Int32" />
+            <Parameter Name="PId" Mode="In" Type="Int32" />
+            <Parameter Name="Doctor_Id" Mode="In" Type="Int32" />
+            <Parameter Name="Test_Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Price" Mode="In" Type="Decimal" />
+            <Parameter Name="Billing_Status" Mode="In" Type="String" />
+            <Parameter Name="Test_Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertMaxBill_No">
+            <Parameter Name="Pid" Mode="In" Type="Int32" />
+            <Parameter Name="Bill_Date" Mode="In" Type="DateTime" />
+            <Parameter Name="D_Id" Mode="In" Type="Int32" />
+            <Parameter Name="P" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="usp_MaxLab_PatientTestId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="usp_MaxLabTestId" ReturnType="Collection(Int32)" />
+          <FunctionImport Name="Usp_RoomData">
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+            <Parameter Name="roomspecification" Mode="In" Type="String" />
+            <Parameter Name="price" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchBilldate" ReturnType="Collection(HospitalDBModel.Usp_SearchBilldate_Result)">
+            <Parameter Name="billdate" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchBillno" ReturnType="Collection(HospitalDBModel.Usp_SearchBillno_Result)">
+            <Parameter Name="billno" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchDoctor" ReturnType="Collection(HospitalDBModel.Usp_SearchDoctor_Result)">
+            <Parameter Name="doctorid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchInpatient" ReturnType="Collection(HospitalDBModel.Usp_SearchInpatient_Result)">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="admission_date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchOutpatient" ReturnType="Collection(HospitalDBModel.Usp_SearchOutpatient_Result)">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="treatment_date" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchPatient" ReturnType="Collection(HospitalDBModel.Usp_SearchPatient_Result)">
+            <Parameter Name="patientid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_SearchRoom" ReturnType="Collection(HospitalDBModel.Usp_SearchRoom_Result)">
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateBill">
+            <Parameter Name="Bill_No" Mode="In" Type="Int32" />
+            <Parameter Name="Pid" Mode="In" Type="Int32" />
+            <Parameter Name="Bill_Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Patient_Type" Mode="In" Type="String" />
+            <Parameter Name="Doctor_Id" Mode="In" Type="String" />
+            <Parameter Name="Doctor_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Room_Charge" Mode="In" Type="Decimal" />
+            <Parameter Name="Operation_Charges" Mode="In" Type="Decimal" />
+            <Parameter Name="Medicine_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Total_Days" Mode="In" Type="Int16" />
+            <Parameter Name="Lab_Fees" Mode="In" Type="Decimal" />
+            <Parameter Name="Total_Amount" Mode="In" Type="Decimal" />
+            <Parameter Name="Billing_Status" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateBillStatus">
+            <Parameter Name="Bill_No" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateDep">
+            <Parameter Name="DId" Mode="In" Type="Int32" />
+            <Parameter Name="DName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_UpdateDoctor">
+            <Parameter Name="doctorid" Mode="In" Type="Int32" />
+            <Parameter Name="doctorname" Mode="In" Type="String" />
+            <Parameter Name="deptid" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_UpdateInpatient">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+            <Parameter Name="admission_date" Mode="In" Type="DateTime" />
+            <Parameter Name="discharge_date" Mode="In" Type="DateTime" />
+            <Parameter Name="amountperday" Mode="In" Type="Decimal" />
+          </FunctionImport>
+          <FunctionImport Name="usp_UpdateLabTestDetails">
+            <Parameter Name="Lab_Id" Mode="In" Type="Int32" />
+            <Parameter Name="PId" Mode="In" Type="Int32" />
+            <Parameter Name="Doctor_Id" Mode="In" Type="Int32" />
+            <Parameter Name="Test_Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Price" Mode="In" Type="Decimal" />
+            <Parameter Name="Billing_Status" Mode="In" Type="String" />
+            <Parameter Name="Test_Id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_UpdateOutpatient">
+            <Parameter Name="pid" Mode="In" Type="Int32" />
+            <Parameter Name="treatment_date" Mode="In" Type="DateTime" />
+            <Parameter Name="doctor_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_UpdatePatient">
+            <Parameter Name="patientid" Mode="In" Type="Int32" />
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="age" Mode="In" Type="Int16" />
+            <Parameter Name="weight" Mode="In" Type="Int16" />
+            <Parameter Name="gender" Mode="In" Type="String" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="phonenumber" Mode="In" Type="Int64" />
+            <Parameter Name="disease" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Usp_UpdateRoomData">
+            <Parameter Name="roomno" Mode="In" Type="Int32" />
+            <Parameter Name="roomspecification" Mode="In" Type="String" />
+            <Parameter Name="price" Mode="In" Type="Decimal" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllBills_Result">
+          <Property Type="Int32" Name="Bill_No" Nullable="false" />
+          <Property Type="Int32" Name="Pid" Nullable="true" />
+          <Property Type="DateTime" Name="Bill_Date" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Patient_Type" Nullable="true" MaxLength="30" />
+          <Property Type="Int32" Name="Doctor_Id" Nullable="true" />
+          <Property Type="Decimal" Name="Doctor_Fees" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="Room_Charge" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="Operation_Charges" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="Medicine_Fees" Nullable="true" Precision="19" />
+          <Property Type="Int16" Name="Total_Days" Nullable="true" />
+          <Property Type="Decimal" Name="Lab_Fees" Nullable="true" Precision="19" />
+          <Property Type="Decimal" Name="Total_Amount" Nullable="true" Precision="19" />
+          <Property Type="String" Name="Billing_Status" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <ComplexType Name="usp_GetAllDep_Result">
+          <Property Type="Int32" Name="DeptId" Nullable="false" />
+          <Property Type="String" Name="DepartmentName" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllDoctor_Result">
+          <Property Type="Int32" Name="Doctor_Id" Nullable="false" />
+          <Property Type="String" Name="Doctor_Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int32" Name="DeptId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllInpatient_Result">
+          <Property Type="Int32" Name="Pid" Nullable="false" />
+          <Property Type="Int32" Name="Room_No" Nullable="true" />
+          <Property Type="Int32" Name="Doctor_Id" Nullable="true" />
+          <Property Type="DateTime" Name="Admission_Date" Nullable="false" />
+          <Property Type="DateTime" Name="Discharge_Date" Nullable="true" />
+          <Property Type="Decimal" Name="Amount_Per_Day" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="usp_GetAllLabDetails_Result">
+          <Property Type="Int32" Name="Lab_Id" Nullable="false" />
+          <Property Type="String" Name="LabTestName" Nullable="true" MaxLength="30" />
+          <Property Type="Decimal" Name="Price" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllOutpatient_Result">
+          <Property Type="Int32" Name="Pid" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="Doctor_Name" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="Disease" Nullable="true" MaxLength="30" />
+          <Property Type="DateTime" Name="Treatment_Date" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllPatient_Result">
+          <Property Type="Int32" Name="Patient_Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int16" Name="Age" Nullable="true" />
+          <Property Type="Int16" Name="Weight" Nullable="true" />
+          <Property Type="String" Name="Gender" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="Phone_No" Nullable="true" />
+          <Property Type="String" Name="Disease" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="Usp_GetAllRooms_Result">
+          <Property Type="Int32" Name="Room_No" Nullable="false" />
+          <Property Type="String" Name="Room_Specification" Nullable="true" MaxLength="20" />
+          <Property Type="Decimal" Name="Price" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="usp_GetAvailablePatients_Result">
+          <Property Type="Int32" Name="Patient_Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int16" Name="Age" Nullable="true" />
+          <Property Type="Int16" Name="Weight" Nullable="true" />
+          <Property Type="String" Name="Gender" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="Phone_No" Nullable="true" />
+          <Property Type="String" Name="Disease" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="usp_GetLabTestDetails_Result">
+          <Property Type="Int32" Name="Lab_Id" Nullable="false" />
+          <Property Type="Int32" Name="PId" Nullable="true" />
+          <Property Type="Int32" Name="Doctor_Id" Nullable="true" />
+          <Property Type="DateTime" Name="Test_Date" Nullable="true" />
+          <Property Type="Decimal" Name="Price" Nullable="true" Precision="19" />
+          <Property Type="String" Name="Billing_Status" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="Test_Id" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="usp_GetUnallocatedPatients_Result">
+          <Property Type="Int32" Name="Patient_Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int16" Name="Age" Nullable="true" />
+          <Property Type="Int16" Name="Weight" Nullable="true" />
+          <Property Type="String" Name="Gender" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="Phone_No" Nullable="true" />
+          <Property Type="String" Name="Disease" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchBilldate_Result">
+          <Property Type="Int32" Name="Bill_No" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Decimal" Name="Total_Amount" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchBillno_Result">
+          <Property Type="Int32" Name="Bill_No" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Decimal" Name="Total_Amount" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchDoctor_Result">
+          <Property Type="Int32" Name="Doctor_Id" Nullable="false" />
+          <Property Type="String" Name="Doctor_Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int32" Name="DeptId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchInpatient_Result">
+          <Property Type="Int32" Name="Pid" Nullable="false" />
+          <Property Type="Int32" Name="Room_No" Nullable="true" />
+          <Property Type="Int32" Name="Doctor_Id" Nullable="true" />
+          <Property Type="DateTime" Name="Admission_Date" Nullable="false" />
+          <Property Type="DateTime" Name="Discharge_Date" Nullable="true" />
+          <Property Type="Decimal" Name="Amount_Per_Day" Nullable="true" Precision="19" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchOutpatient_Result">
+          <Property Type="Int32" Name="Pid" Nullable="false" />
+          <Property Type="DateTime" Name="Treatment_Date" Nullable="false" />
+          <Property Type="Int32" Name="Doctor_Id" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchPatient_Result">
+          <Property Type="Int32" Name="Patient_Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="30" />
+          <Property Type="Int16" Name="Age" Nullable="true" />
+          <Property Type="Int16" Name="Weight" Nullable="true" />
+          <Property Type="String" Name="Gender" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="Phone_No" Nullable="true" />
+          <Property Type="String" Name="Disease" Nullable="true" MaxLength="30" />
+        </ComplexType>
+        <ComplexType Name="Usp_SearchRoom_Result">
+          <Property Type="Int32" Name="Room_No" Nullable="false" />
+          <Property Type="String" Name="Room_Specification" Nullable="true" MaxLength="20" />
+          <Property Type="Decimal" Name="Price" Nullable="true" Precision="19" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="HospitalDBModelStoreContainer" CdmEntityContainer="HospitalDBEntities1">
+          <EntitySetMapping Name="Bill_Data">
+            <EntityTypeMapping TypeName="HospitalDBModel.Bill_Data">
+              <MappingFragment StoreEntitySet="Bill_Data">
+                <ScalarProperty Name="Bill_No" ColumnName="Bill_No" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Bill_Date" ColumnName="Bill_Date" />
+                <ScalarProperty Name="Patient_Type" ColumnName="Patient_Type" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Doctor_Fees" ColumnName="Doctor_Fees" />
+                <ScalarProperty Name="Room_Charge" ColumnName="Room_Charge" />
+                <ScalarProperty Name="Operation_Charges" ColumnName="Operation_Charges" />
+                <ScalarProperty Name="Medicine_Fees" ColumnName="Medicine_Fees" />
+                <ScalarProperty Name="Total_Days" ColumnName="Total_Days" />
+                <ScalarProperty Name="Lab_Fees" ColumnName="Lab_Fees" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+                <ScalarProperty Name="Billing_Status" ColumnName="Billing_Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departments">
+            <EntityTypeMapping TypeName="HospitalDBModel.Department">
+              <MappingFragment StoreEntitySet="Department">
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Doctors">
+            <EntityTypeMapping TypeName="HospitalDBModel.Doctor">
+              <MappingFragment StoreEntitySet="Doctor">
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Inpatients">
+            <EntityTypeMapping TypeName="HospitalDBModel.Inpatient">
+              <MappingFragment StoreEntitySet="Inpatient">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Admission_Date" ColumnName="Admission_Date" />
+                <ScalarProperty Name="Discharge_Date" ColumnName="Discharge_Date" />
+                <ScalarProperty Name="Amount_Per_Day" ColumnName="Amount_Per_Day" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lab_Information">
+            <EntityTypeMapping TypeName="HospitalDBModel.Lab_Information">
+              <MappingFragment StoreEntitySet="Lab_Information">
+                <ScalarProperty Name="Lab_Id" ColumnName="Lab_Id" />
+                <ScalarProperty Name="LabTestName" ColumnName="LabTestName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lab_Patient">
+            <EntityTypeMapping TypeName="HospitalDBModel.Lab_Patient">
+              <MappingFragment StoreEntitySet="Lab_Patient">
+                <ScalarProperty Name="Lab_Id" ColumnName="Lab_Id" />
+                <ScalarProperty Name="PId" ColumnName="PId" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Test_Date" ColumnName="Test_Date" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Billing_Status" ColumnName="Billing_Status" />
+                <ScalarProperty Name="Test_Id" ColumnName="Test_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Outpatients">
+            <EntityTypeMapping TypeName="HospitalDBModel.Outpatient">
+              <MappingFragment StoreEntitySet="Outpatient">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Treatment_Date" ColumnName="Treatment_Date" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Patients">
+            <EntityTypeMapping TypeName="HospitalDBModel.Patient">
+              <MappingFragment StoreEntitySet="Patient">
+                <ScalarProperty Name="Patient_Id" ColumnName="Patient_Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Room_Data">
+            <EntityTypeMapping TypeName="HospitalDBModel.Room_Data">
+              <MappingFragment StoreEntitySet="Room_Data">
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Room_Specification" ColumnName="Room_Specification" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Room_Info">
+            <EntityTypeMapping TypeName="HospitalDBModel.Room_Info">
+              <MappingFragment StoreEntitySet="Room_Info">
+                <ScalarProperty Name="Room_no" ColumnName="Room_no" />
+                <ScalarProperty Name="Room_Status" ColumnName="Room_Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="HospitalDBModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="HospitalDBModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="HospitalDBModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="HospitalDBModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="HospitalDBModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="HospitalDBModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="HospitalDBModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="HospitalDBModel.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="usp_AddBill" FunctionName="HospitalDBModel.Store.usp_AddBill" />
+          <FunctionImportMapping FunctionImportName="Usp_AddDoctor" FunctionName="HospitalDBModel.Store.Usp_AddDoctor" />
+          <FunctionImportMapping FunctionImportName="usp_AddInpatient" FunctionName="HospitalDBModel.Store.usp_AddInpatient" />
+          <FunctionImportMapping FunctionImportName="Usp_AddOutpatient" FunctionName="HospitalDBModel.Store.Usp_AddOutpatient" />
+          <FunctionImportMapping FunctionImportName="Usp_AddPatient" FunctionName="HospitalDBModel.Store.Usp_AddPatient" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteBill" FunctionName="HospitalDBModel.Store.usp_DeleteBill" />
+          <FunctionImportMapping FunctionImportName="Usp_DeleteDoctor" FunctionName="HospitalDBModel.Store.Usp_DeleteDoctor" />
+          <FunctionImportMapping FunctionImportName="Usp_DeleteInpatient" FunctionName="HospitalDBModel.Store.Usp_DeleteInpatient" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteLabDetails" FunctionName="HospitalDBModel.Store.usp_DeleteLabDetails" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteLabTestDetails" FunctionName="HospitalDBModel.Store.usp_DeleteLabTestDetails" />
+          <FunctionImportMapping FunctionImportName="Usp_DeleteOutpatient" FunctionName="HospitalDBModel.Store.Usp_DeleteOutpatient" />
+          <FunctionImportMapping FunctionImportName="usp_DeletePaidPatient" FunctionName="HospitalDBModel.Store.usp_DeletePaidPatient" />
+          <FunctionImportMapping FunctionImportName="Usp_DeletePatient" FunctionName="HospitalDBModel.Store.Usp_DeletePatient" />
+          <FunctionImportMapping FunctionImportName="Usp_DeleteRoom_Info" FunctionName="HospitalDBModel.Store.Usp_DeleteRoom_Info" />
+          <FunctionImportMapping FunctionImportName="Usp_DeleteRoomData" FunctionName="HospitalDBModel.Store.Usp_DeleteRoomData" />
+          <FunctionImportMapping FunctionImportName="usp_DeletetDep" FunctionName="HospitalDBModel.Store.usp_DeletetDep" />
+          <FunctionImportMapping FunctionImportName="Usp_GetAllBills" FunctionName="HospitalDBModel.Store.Usp_GetAllBills">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllBills_Result">
+                <ScalarProperty Name="Bill_No" ColumnName="Bill_No" />
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Bill_Date" ColumnName="Bill_Date" />
+                <ScalarProperty Name="Patient_Type" ColumnName="Patient_Type" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Doctor_Fees" ColumnName="Doctor_Fees" />
+                <ScalarProperty Name="Room_Charge" ColumnName="Room_Charge" />
+                <ScalarProperty Name="Operation_Charges" ColumnName="Operation_Charges" />
+                <ScalarProperty Name="Medicine_Fees" ColumnName="Medicine_Fees" />
+                <ScalarProperty Name="Total_Days" ColumnName="Total_Days" />
+                <ScalarProperty Name="Lab_Fees" ColumnName="Lab_Fees" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+                <ScalarProperty Name="Billing_Status" ColumnName="Billing_Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetAllDep" FunctionName="HospitalDBModel.Store.usp_GetAllDep">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.usp_GetAllDep_Result">
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+                <ScalarProperty Name="DepartmentName" ColumnName="DepartmentName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_GetAllDoctor" FunctionName="HospitalDBModel.Store.Usp_GetAllDoctor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllDoctor_Result">
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_GetAllInpatient" FunctionName="HospitalDBModel.Store.Usp_GetAllInpatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllInpatient_Result">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Admission_Date" ColumnName="Admission_Date" />
+                <ScalarProperty Name="Discharge_Date" ColumnName="Discharge_Date" />
+                <ScalarProperty Name="Amount_Per_Day" ColumnName="Amount_Per_Day" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetAllLabDetails" FunctionName="HospitalDBModel.Store.usp_GetAllLabDetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.usp_GetAllLabDetails_Result">
+                <ScalarProperty Name="Lab_Id" ColumnName="Lab_Id" />
+                <ScalarProperty Name="LabTestName" ColumnName="LabTestName" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_GetAllOutpatient" FunctionName="HospitalDBModel.Store.Usp_GetAllOutpatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllOutpatient_Result">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+                <ScalarProperty Name="Treatment_Date" ColumnName="Treatment_Date" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_GetAllPatient" FunctionName="HospitalDBModel.Store.Usp_GetAllPatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllPatient_Result">
+                <ScalarProperty Name="Patient_Id" ColumnName="Patient_Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_GetAllRooms" FunctionName="HospitalDBModel.Store.Usp_GetAllRooms">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_GetAllRooms_Result">
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Room_Specification" ColumnName="Room_Specification" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetAllUnallocatedRooms" FunctionName="HospitalDBModel.Store.usp_GetAllUnallocatedRooms" />
+          <FunctionImportMapping FunctionImportName="usp_GetAvailablePatients" FunctionName="HospitalDBModel.Store.usp_GetAvailablePatients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.usp_GetAvailablePatients_Result">
+                <ScalarProperty Name="Patient_Id" ColumnName="Patient_Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetLabTestDetails" FunctionName="HospitalDBModel.Store.usp_GetLabTestDetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.usp_GetLabTestDetails_Result">
+                <ScalarProperty Name="Lab_Id" ColumnName="Lab_Id" />
+                <ScalarProperty Name="PId" ColumnName="PId" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Test_Date" ColumnName="Test_Date" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Billing_Status" ColumnName="Billing_Status" />
+                <ScalarProperty Name="Test_Id" ColumnName="Test_Id" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetMaxBillNo" FunctionName="HospitalDBModel.Store.usp_GetMaxBillNo" />
+          <FunctionImportMapping FunctionImportName="usp_GetMaxDepId" FunctionName="HospitalDBModel.Store.usp_GetMaxDepId" />
+          <FunctionImportMapping FunctionImportName="usp_GetMaxDoctorId" FunctionName="HospitalDBModel.Store.usp_GetMaxDoctorId" />
+          <FunctionImportMapping FunctionImportName="usp_GetMaxLabId" FunctionName="HospitalDBModel.Store.usp_GetMaxLabId" />
+          <FunctionImportMapping FunctionImportName="usp_GetMaxPatientId" FunctionName="HospitalDBModel.Store.usp_GetMaxPatientId" />
+          <FunctionImportMapping FunctionImportName="usp_GetUnallocatedPatients" FunctionName="HospitalDBModel.Store.usp_GetUnallocatedPatients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.usp_GetUnallocatedPatients_Result">
+                <ScalarProperty Name="Patient_Id" ColumnName="Patient_Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_GetUnpaidPtientBillNo" FunctionName="HospitalDBModel.Store.usp_GetUnpaidPtientBillNo" />
+          <FunctionImportMapping FunctionImportName="usp_InsertDep" FunctionName="HospitalDBModel.Store.usp_InsertDep" />
+          <FunctionImportMapping FunctionImportName="usp_InsertLab" FunctionName="HospitalDBModel.Store.usp_InsertLab" />
+          <FunctionImportMapping FunctionImportName="usp_InsertLabTestDetails" FunctionName="HospitalDBModel.Store.usp_InsertLabTestDetails" />
+          <FunctionImportMapping FunctionImportName="usp_InsertMaxBill_No" FunctionName="HospitalDBModel.Store.usp_InsertMaxBill_No" />
+          <FunctionImportMapping FunctionImportName="usp_MaxLab_PatientTestId" FunctionName="HospitalDBModel.Store.usp_MaxLab_PatientTestId" />
+          <FunctionImportMapping FunctionImportName="usp_MaxLabTestId" FunctionName="HospitalDBModel.Store.usp_MaxLabTestId" />
+          <FunctionImportMapping FunctionImportName="Usp_RoomData" FunctionName="HospitalDBModel.Store.Usp_RoomData" />
+          <FunctionImportMapping FunctionImportName="Usp_SearchBilldate" FunctionName="HospitalDBModel.Store.Usp_SearchBilldate">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchBilldate_Result">
+                <ScalarProperty Name="Bill_No" ColumnName="Bill_No" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchBillno" FunctionName="HospitalDBModel.Store.Usp_SearchBillno">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchBillno_Result">
+                <ScalarProperty Name="Bill_No" ColumnName="Bill_No" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Total_Amount" ColumnName="Total_Amount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchDoctor" FunctionName="HospitalDBModel.Store.Usp_SearchDoctor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchDoctor_Result">
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Doctor_Name" ColumnName="Doctor_Name" />
+                <ScalarProperty Name="DeptId" ColumnName="DeptId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchInpatient" FunctionName="HospitalDBModel.Store.Usp_SearchInpatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchInpatient_Result">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+                <ScalarProperty Name="Admission_Date" ColumnName="Admission_Date" />
+                <ScalarProperty Name="Discharge_Date" ColumnName="Discharge_Date" />
+                <ScalarProperty Name="Amount_Per_Day" ColumnName="Amount_Per_Day" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchOutpatient" FunctionName="HospitalDBModel.Store.Usp_SearchOutpatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchOutpatient_Result">
+                <ScalarProperty Name="Pid" ColumnName="Pid" />
+                <ScalarProperty Name="Treatment_Date" ColumnName="Treatment_Date" />
+                <ScalarProperty Name="Doctor_Id" ColumnName="Doctor_Id" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchPatient" FunctionName="HospitalDBModel.Store.Usp_SearchPatient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchPatient_Result">
+                <ScalarProperty Name="Patient_Id" ColumnName="Patient_Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone_No" ColumnName="Phone_No" />
+                <ScalarProperty Name="Disease" ColumnName="Disease" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Usp_SearchRoom" FunctionName="HospitalDBModel.Store.Usp_SearchRoom">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HospitalDBModel.Usp_SearchRoom_Result">
+                <ScalarProperty Name="Room_No" ColumnName="Room_No" />
+                <ScalarProperty Name="Room_Specification" ColumnName="Room_Specification" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_UpdateBill" FunctionName="HospitalDBModel.Store.usp_UpdateBill" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateBillStatus" FunctionName="HospitalDBModel.Store.usp_UpdateBillStatus" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateDep" FunctionName="HospitalDBModel.Store.usp_UpdateDep" />
+          <FunctionImportMapping FunctionImportName="Usp_UpdateDoctor" FunctionName="HospitalDBModel.Store.Usp_UpdateDoctor" />
+          <FunctionImportMapping FunctionImportName="Usp_UpdateInpatient" FunctionName="HospitalDBModel.Store.Usp_UpdateInpatient" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateLabTestDetails" FunctionName="HospitalDBModel.Store.usp_UpdateLabTestDetails" />
+          <FunctionImportMapping FunctionImportName="Usp_UpdateOutpatient" FunctionName="HospitalDBModel.Store.Usp_UpdateOutpatient" />
+          <FunctionImportMapping FunctionImportName="Usp_UpdatePatient" FunctionName="HospitalDBModel.Store.Usp_UpdatePatient" />
+          <FunctionImportMapping FunctionImportName="Usp_UpdateRoomData" FunctionName="HospitalDBModel.Store.Usp_UpdateRoomData" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
